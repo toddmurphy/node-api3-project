@@ -73,6 +73,16 @@ router.put('/:id', (req, res) => {
   // do your magic!
   const editID = req.params.id;
   const editPost = req.body;
+
+  db.update(editID, editPost)
+    .then(updatedPost => {
+      res.status(200);
+      res.json(updatedPost);
+    })
+    .catch(error => {
+      res.status(500);
+      res.json({ errorMessage: 'Sorry, post not updated on the server', error });
+    });
 });
 
 // custom middleware
