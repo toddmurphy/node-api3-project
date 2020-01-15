@@ -61,10 +61,38 @@ router.get('/:id/posts', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // do your magic!
+  const deleteID = req.params.id;
+
+  db.remove(deleteID)
+    .then(deletedUser => {
+      if (deleteID) {
+        res.status(200);
+        res.json(deletedUser);
+      } else {
+        res.status(400);
+        res.json({ message: 'Sorry, user not deleted' });
+      }
+    })
+    .catch(error => {
+      res.status(500);
+      res.json({ errorMessage: 'Sorry, user not deleted from server', error });
+    });
 });
 
 router.put('/:id', (req, res) => {
   // do your magic!
+  const updateID = req.params.id;
+  const updatedUser = req.body;
+
+  db.update(updateID, updatedUser)
+    .then(updatedInfo => {
+      res.status(200);
+      res.json(updatedInfo);
+    })
+    .catch(error => {
+      res.status(500);
+      res.json({ errorMessage: 'Sorry, user not updated on the server', error });
+    });
 });
 
 //custom middleware
