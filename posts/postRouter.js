@@ -55,8 +55,24 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+router.post('/', (req, res) => {
+  const newPost = req.body;
+
+  db.insert(newPost)
+    .then(comment => {
+      res.status(201);
+      res.json(comment);
+    })
+    .catch(error => {
+      res.status(400);
+      res.json({ errorMessage: 'Sorry, no post added to server', error });
+    });
+});
+
 router.put('/:id', (req, res) => {
   // do your magic!
+  const editID = req.params.id;
+  const editPost = req.body;
 });
 
 // custom middleware
