@@ -37,6 +37,22 @@ router.get('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // do your magic!
+  const deleteID = req.params.id;
+
+  db.remove(deleteID)
+    .then(deletedPost => {
+      if (deleteID) {
+        res.status(200);
+        res.json(deletedPost);
+      } else {
+        res.status(404);
+        res.json({ message: 'Sorry, post not deleted' });
+      }
+    })
+    .catch(error => {
+      res.status(500);
+      res.json({ errorMessage: 'Sorry, post not removed from server', error });
+    });
 });
 
 router.put('/:id', (req, res) => {
