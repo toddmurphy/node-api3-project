@@ -3,7 +3,7 @@ const db = require('./userDb.js');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
+router.post('/', validateUser, (req, res) => {
   // do your magic!
   const userPost = req.body;
 
@@ -99,14 +99,40 @@ router.put('/:id', (req, res) => {
 
 function validateUserId(req, res, next) {
   // do your magic!
+  if (userID) {
+    //store as req.user
+    userID = req.user;
+  } else {
+    res.status(400);
+    res.json({ message: 'invalid user id' });
+  }
+  next();
 }
 
 function validateUser(req, res, next) {
   // do your magic!
+  if (!req.body) {
+    res.status(400);
+    res.json({ message: 'missing user data' });
+  } else if (!req.body.name) {
+    res.status(400);
+    res.json({ message: 'missing required name field' });
+  } else {
+    next();
+  }
 }
 
 function validatePost(req, res, next) {
   // do your magic!
+  if (!req.body) {
+    res.status(400);
+    res.json({ message: 'missing post data' });
+  } else if (!req.body.text) {
+    res.status(400);
+    res.json({ message: 'missing required text field' });
+  } else {
+    next();
+  }
 }
 
 module.exports = router;
