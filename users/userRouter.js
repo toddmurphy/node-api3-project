@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('./userDb.js');
+const postDB = require('../posts/postDb');
 
 const router = express.Router();
 
@@ -20,6 +21,20 @@ router.post('/', validateUser, (req, res) => {
 
 router.post('/:id/posts', (req, res) => {
   // do your magic!
+  const user_id = req.params.id;
+  const postBody = req.body;
+  const newPost = { text: postBody.text, user_id };
+
+  postDB
+    .insert(newPost)
+    .then(comment => {
+      res.status(200);
+      res.json({ newPost });
+    })
+    .catch(error => {
+      res.status(500);
+      res.json({ errorMessage: 'Sorry, not post created on the server', error });
+    });
 });
 
 router.get('/', (req, res) => {
@@ -57,6 +72,17 @@ router.get('/:id', (req, res) => {
 
 router.get('/:id/posts', (req, res) => {
   // do your magic!
+  const ID = req.params.id;
+
+  db.getUserPosts(ID)
+    .then(posts => {
+      res.status(200)
+      res.json(posts)
+    })
+    .catch(error => {
+      res.status(500)
+      res.json({errorMessage: 'Sorry, no post id found', error})
+    })
 });
 
 router.delete('/:id', (req, res) => {
@@ -109,6 +135,7 @@ function validateUserId(req, res, next) {
   next();
 }
 
+//working
 function validateUser(req, res, next) {
   // do your magic!
   if (!req.body) {
