@@ -19,7 +19,7 @@ router.post('/', validateUser, (req, res) => {
     });
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts', validatePost, (req, res) => {
   // do your magic!
   const user_id = req.params.id;
   const postBody = req.body;
@@ -50,13 +50,13 @@ router.get('/', (req, res) => {
     });
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', validateUserId, (req, res) => {
   // do your magic!
   const userID = req.params.id;
 
   db.getById(userID)
     .then(user => {
-      if (userID) {
+      if (user) {
         res.status(201);
         res.json(user);
       } else {
@@ -76,13 +76,13 @@ router.get('/:id/posts', (req, res) => {
 
   db.getUserPosts(ID)
     .then(posts => {
-      res.status(200)
-      res.json(posts)
+      res.status(200);
+      res.json(posts);
     })
     .catch(error => {
-      res.status(500)
-      res.json({errorMessage: 'Sorry, no post id found', error})
-    })
+      res.status(500);
+      res.json({ errorMessage: 'Sorry, no post id found', error });
+    });
 });
 
 router.delete('/:id', (req, res) => {
@@ -125,14 +125,14 @@ router.put('/:id', (req, res) => {
 
 function validateUserId(req, res, next) {
   // do your magic!
-  if (userID) {
+  const userID = Number(req.params.id);
+  if (typeof userID === 'number') {
     //store as req.user
-    userID = req.user;
+    next();
   } else {
     res.status(400);
     res.json({ message: 'invalid user id' });
   }
-  next();
 }
 
 //working
